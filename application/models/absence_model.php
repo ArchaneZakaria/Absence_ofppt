@@ -38,6 +38,21 @@ class absence_model extends MY_Model {
       $query = $this->db->query($sql);
       return $query->result();
     }
+    public function getAbsenceStagiaire($stagiaireI)
+    {
+      $sql="SELECT * from stagiaire ,absence ,seance ,enseigner ,anneeinscription
+              WHERE absence.Stagiaire_idStagiaire=stagiaire.idStagiaire
+              and stagiaire.idStagiaire='$stagiaireI'
+              and absence.etat_absence='NJ'
+              and stagiaire.deleted_stagiaire='0'
+              AND absence.deleted_absence='0'
+              AND absence.seance_id_seance=seance.id_seance
+              AND seance.Enseigner_idEnseigner=enseigner.idEnseigner
+              and enseigner.AnneeInscription_idAnneeInscription=anneeinscription.idAnneeInscription
+              and anneeinscription.active_anneeinscription='1'";
+      $query = $this->db->query($sql);
+      return $query->result();
+    }
     public function createabsence($options,$cdate_absence = 'cdate_absence ') {
      return parent::create($options,$cdate_absence );
  }

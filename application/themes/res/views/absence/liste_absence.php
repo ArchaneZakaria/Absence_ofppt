@@ -79,7 +79,7 @@
                           <span aria-hidden="true">&times;</span>
                       </button>
                   </div>
-                  <form id="form_modifier" role="form">
+                  <form id="form_justifier" role="form">
                     <div class="modal-body">
                       <div class="row">
                         <div class="col-12">
@@ -98,13 +98,13 @@
                     </div>
                     <div class="modal-footer">
                       <button type="reset" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                      <button type="submit" class="btn btn-primary" id="justifier_absence"><i class="fas fa-print" ></i> Imprimer billet d'absence</button>
-<input type='button' id='btn' value='Print' onclick='printDiv();'>
+                      <button type="submit" class="btn btn-primary" id="justifier_absence" value='Print'  ><i class="fas fa-print" ></i> Imprimer billet d'absence</button>
                     </div>
                     <div id='DivIdToPrint' style="display:none;">
-                      <h1 style="text-align: center;">Justification d'absence</h1><br><br>
-                        <p>Le stagiaire :<bold>ARCHANE Zakaria</bold> est autoriser a rentrer en classe</p>
-                        <p>Justification d'absence :<span>COVID19</span></p>
+                      <img src="<?=base_url('assets/img/logo_ofppt_officiel.png')?>" alt="AdminLTE Logo" class="img-responsive" style="width:10%;height:10%;">
+                      <h1 style="text-align: center;">Justification d'absence</h1><hr width="350" size="2" align=center color ="#00ff00"><br><br>
+                        <p>Le stagiaire :<b id="nom_complet">ARCHANE Zakaria</b> est autoriser a rentrer en classe</p>
+                        <p>Justification d'absence :<span id="justificationAbsence">COVID19</span></p>
               </div>
                   </div>
                 </form>
@@ -370,7 +370,7 @@
                       m.CefStagiaire,
                       m.Sexe,
                       nombre_absence,
-                      "<a href=\"#\"><i class=\" fas fa-history historique_stagiaire \" title=\"Historique d'absence\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>&nbsp<a href=\"#\"><i class=\"fas fa-check-square autorisation\" title=\"Autoriser l'acces aux cours\"></i></a>"
+                      "<a href=\"#\"><i class=\" fas fa-history historique_stagiaire \" title=\"Historique d'absence\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>&nbsp<a href=\"#\"><i class=\"fas fa-check-square autorisation\" title=\"Autoriser l'acces aux cours\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>"
                   ] ).draw( false ).node();
                   $( rowNode ).css( 'background-color', '#ff5757' );
                 }else if(nombre_absence >= 1){
@@ -380,7 +380,7 @@
                        m.CefStagiaire,
                        m.Sexe,
                        nombre_absence,
-                       "<a href=\"#\"><i class=\" fas fa-history historique_stagiaire \" title=\"Historique d'absence\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>&nbsp<a href=\"#\"><i class=\"fas fa-check-square autorisation\" title=\"Autoriser l'acces aux cours\"></i></a>"
+                       "<a href=\"#\"><i class=\" fas fa-history historique_stagiaire \" title=\"Historique d'absence\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>&nbsp<a href=\"#\"><i class=\"fas fa-check-square autorisation\" title=\"Autoriser l'acces aux cours\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>"
                    ] ).draw( false ).node();
                    $( rowNode ).css( 'background-color', '#ffef99' );
 
@@ -391,7 +391,7 @@
                        m.CefStagiaire,
                        m.Sexe,
                        nombre_absence,
-                       "<a href=\"#\"><i class=\" fas fa-history historique_stagiaire \" title=\"Historique d'absence\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>&nbsp<a href=\"#\"><i class=\"fas fa-check-square autorisation\" title=\"Autoriser l'acces aux cours\"></i></a>"
+                       "<a href=\"#\"><i class=\" fas fa-history historique_stagiaire \" title=\"Historique d'absence\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>&nbsp<a href=\"#\"><i class=\"fas fa-check-square autorisation\" title=\"Autoriser l'acces aux cours\" data-stagiaireI=\""+m.idStagiaire+"\"  data-nom=\""+m.NomStagiaire+"\" data-prenom=\""+m.PrenomStagiaire+"\"></i></a>"
                    ] ).draw( false );
                 }
 
@@ -453,9 +453,7 @@
     });
 
   });
-$('body').on('click','.autorisation',function(event){
-    $('#ModalModification').modal('show');
-  });
+
 
 
   //les dérnieres seances
@@ -518,21 +516,38 @@ var id_groupe= "";
 
   newWin.document.close();
 
-  setTimeout(function(){newWin.close();},10);
+  //setTimeout(function(){newWin.close();},10);
 
 }
+
+stagiaireI ="";
+nomStagiaire ="";
+prenomStagiaire ="";
+$('body').on('click','.autorisation',function(event){
+stagiaireI = $(this).attr("data-stagiaireI");
+nomStagiaire = $(this).attr("data-nom");
+prenomStagiaire = $(this).attr("data-prenom");
+  $('#ModalModification').modal('show');
+});
+
+
   $('#justifier_absence').on('click',function(event){
-event.preventDefault();
-    var justification_absence=$('#justification_absence').val();
+var justification_absence=$('#justification_absence').val();
+$('#nom_complet').html(nomStagiaire+" "+prenomStagiaire);
+$('#justificationAbsence').html(justification_absence);
+
+printDiv();
 //window.printPreview('gggg');
       $.ajax({
         type: 'POST',
         url: base_url + 'absence/ajax/AutoriserAcces',
         dataType: "JSON",
-        data : {justification_absence : justification_absence },
+        data : {justification_absence : justification_absence, stagiaireI : stagiaireI, nomStagiaire : nomStagiaire ,prenomStagiaire : prenomStagiaire},
         success: function(msg){
+
           if(msg.status == '1'){
-            $("#justifier_absence").trigger("reset");
+            $("#form_justifier").trigger("reset");
+
             $(document).Toasts('create', {
               class: 'bg-success',
               title: 'Séance créé ',
@@ -553,6 +568,7 @@ event.preventDefault();
               delay: 1200,
               body: msg.message
             });
+
           }
         },
         error: function(dataR){
@@ -569,54 +585,3 @@ event.preventDefault();
     }
   );
 </script>
-<script>
-function ( $ ) {
-    $.fn.printPreview = function( options ) {
-        var elem = this;
-
-        var opt = $.extend({
-            obj2print:'body',
-            style:'',
-            width:'670',
-            height:screen.height-105,
-            top:0,
-            left:'center',
-            resizable : 'yes',
-            scrollbars:'yes',
-            status:'no',
-            title:'Print Preview'
-        }, options );
-        if(opt.left == 'center'){
-            opt.left=(screen.width/2)-(opt.width/2);
-        }
-        $(opt.obj2print+" input").each(function(){
-            $(this).attr('value',$(this).val());
-        });
-        $(opt.obj2print+" textarea").each(function(){
-            $(this).html($(this).val());
-        });
-        return elem.bind("click.printPreview", function () {
-            var btnCode = elem[0].outerHTML;
-            var headString = '';
-            headString = $("head").html();
-            var str = "<!DOCTYPE html><html><head>"+headString+opt.style+"</head><body>";
-            str+=$(opt.obj2print)[0].outerHTML.replace(btnCode,'')+"</body></html>";
-            //top open multiple instances we have to name newWindow differently, so getting milliseconds
-            var d = new Date();
-            var n = 'newWindow'+d.getMilliseconds();
-            var newWindow = window.open(
-                    "",
-                    n,
-                    "width="+opt.width+
-                    ",top="+opt.top+
-                    ",height="+opt.height+
-                    ",left="+opt.left+
-                    ",resizable="+opt.resizable+
-                    ",scrollbars="+opt.scrollbars+
-                    ",status="+opt.status
-                    );
-            newWindow.document.write(str);
-            newWindow.document.title = opt.title;
-        });
-    };
-}</script>

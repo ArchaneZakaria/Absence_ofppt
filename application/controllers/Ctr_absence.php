@@ -160,42 +160,27 @@ class Ctr_absence extends Master
 
           $this->form_validation->set_rules('justification_absence', 'La justification de l\'absence est obligatoire', 'required|trim',
                                        array('required' => 'La justification de l\'absence est obligatoire'));
-
+         $this->form_validation->set_rules('stagiaireI', 'stagiaireI est obligatoire', 'required|trim',
+                                      array('required' => 'stagiaireI est obligatoire'));
                                        if ($this->form_validation->run()) {
-                   $justification_absence                        = $this->input->post('justification_absence');
-
-
-
-                   $this->load->library("Word");
-                 		$foldertemplate 	= "assets/sample.docx";
-                         $document        	= new \PhpOffice\PhpWord\TemplateProcessor(realpath($foldertemplate));
-                         $document->setValue("nama","Abdulionel");
-                         $document->setValue("pelatihan","Membangun Website dengan CodeIgniter");
-                         $filename      		= 'assets/hhhh';
-                         $document->saveAs('./'.$filename.".docx");
-                         $this->load->library("apiconvertfile");
-                         //daftar dulu di https://www.convertapi.com
-                         $configconvert["apisecret"] = "secret_api";
-                         $configconvert["fromfile"]  = realpath($filename.".docx");
-                         $configconvert["todir"]     = realpath('assets/');
-                         $configconvert["fromtype"]  = "docx";
-                         $configconvert["totype"]    = "pdf";
-                         $result                     = $this->apiconvertfile->do_convert($configconvert);
-                         if($result[0]!=""){
-                             $this->load->helper('download');
-                             force_download($result[0], NULL);
-                         }else{
-                             echo "Gagal membuat sertifikat";
-                         }
-          /*header("Content-type: application/vnd.ms-word");
-           header("Content-Disposition: attachment;Filename=".rand().".doc");
-           header("Pragma: no-cache");
-           header("Expires: 0");
-           echo '<h1>Justification d\'absence</h1>';
-           echo $justification_absence;*/
+                   $justification_absence                        =  $this->input->post('justification_absence');
+                   $id_stagiaire                                  = $this->input->post('stagiaireI');
+                   $absences      =                                 $this->absence->getAbsenceStagiaire($id_stagiaire);
+          foreach ($absences as $key) {
+            $conditions    = array('idAbsence' => $key->idAbsence);
+            $options     = array (
+            'uby_absence'   => '1' ,
+            'udate_absence' => $dateNow ,
+            'etat_absence'   => 'J',
+            'justification_absence' => $justification_absence
+                  );
+            $this->absence->update($options,$conditions);
+          }
 
                    $conditions = array();
-
+                   $message = "Stagiaire autorisé.";
+                   echo json_encode(array( 'status' => '1',
+                                           'message' => $message));
                                        }
                                        else {
                                           $errors = validation_errors();
