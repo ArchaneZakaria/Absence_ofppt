@@ -9,53 +9,55 @@
           <table class="table table-bordered table-hover exampleME">
             <thead>
               <tr>
-                <th>Groupe</th>
-                <th>Filiére</th>
-                <th>Module</th>
-                <th>Effectif</th>
-                <th>Niveau</th>
-                <th>Année scolaire</th>
-                <th></th>
+	                <th>Groupe</th>
+	                <th>Filiére</th>
+	                <th>Module</th>
+	                <th>Effectif</th>
+	                <th>Niveau</th>
+	                <th>Année scolaire</th>
+	                <th></th>
               </tr>
             </thead>
             <tbody>
               <?php foreach($AllEnseigner as $rowDetail ):?>
               <tr>
-                <td><?=$rowDetail->libelle_groupe;?></td>
-                <td><?=$rowDetail->libelle_filiere;?></td>
-                <td><?=$rowDetail->libelle_formation;?></td>
-                <td><?php
-                                     $sql="SELECT count(*) as count
-                                     from inscription ,etablissement ,anneeinscription ,groupe
-                                     WHERE inscription.Etablissement_idEtablissement=etablissement.idEtablissement
-                                     AND inscription.AnneeInscription_idAnneeInscription=anneeinscription.idAnneeInscription
-                                     AND inscription.Groupe_idGroupe=groupe.idGroupe
-                                     AND groupe.idGroupe='$rowDetail->idGroupe'
-                                     AND etablissement.active_etablissement='1'
-                                     AND anneeinscription.active_anneeinscription='1'
-                                     AND inscription.deleted_inscription='0'
-                                     and etablissement.deleted_etablissement='0'
-                                     AND anneeinscription.deleted_annee_inscription='0'
-                                     AND groupe.deleted_groupe='0' ";
+	                <td><?=$rowDetail->libelle_groupe;?></td>
+	                <td><?=$rowDetail->libelle_filiere;?></td>
+	                <td><?=$rowDetail->libelle_formation;?></td>
+	                <td><?php
+	                                     $sql="SELECT count(*) as count
+	                                     from inscription ,etablissement ,anneeinscription ,groupe
+	                                     WHERE inscription.Etablissement_idEtablissement=etablissement.idEtablissement
+	                                     AND inscription.AnneeInscription_idAnneeInscription=anneeinscription.idAnneeInscription
+	                                     AND inscription.Groupe_idGroupe=groupe.idGroupe
+	                                     AND groupe.idGroupe='$rowDetail->idGroupe'
+	                                     AND etablissement.active_etablissement='1'
+	                                     AND anneeinscription.active_anneeinscription='1'
+	                                     AND inscription.deleted_inscription='0'
+	                                     and etablissement.deleted_etablissement='0'
+	                                     AND anneeinscription.deleted_annee_inscription='0'
+	                                     AND groupe.deleted_groupe='0' ";
 
-                                      $NbrStagiaires = $this->db->query($sql);
-                                      $effectif = $NbrStagiaires->result();
-                                        echo $effectif[0]->count;
+	                                      $NbrStagiaires = $this->db->query($sql);
+	                                      $effectif = $NbrStagiaires->result();
+	                                        echo $effectif[0]->count;
 
-                                  ?></td>
-                <td><?=$rowDetail->niveau_filiere;?></td>
-                <td><?=$rowDetail->Niveau_idNiveau;?>A</td>
-                <td>
-                  <a href="#">
-                    <i class="fas fa-info linev" title="Derniéres scéances" data-enseigner="<?=$rowDetail->idEnseigner;?>"></i>
-                  <a>&nbsp;
-                  <a href="#">
-                    <i class="fas fa-edit noter_absence" title="Noter l'absence" data-enseigner="<?=$rowDetail->idEnseigner;?>"></i>
-                  </a>&nbsp;
-                  <a href="#">
-                    <i class="fas fa-users effectif_groupe" title="Effectif" data-enseigner="<?=$rowDetail->idEnseigner;?>"></i>
-                  </a>
-                </td>
+	                                  ?>
+
+	                                  </td>
+	                <td><?=$rowDetail->niveau_filiere;?></td>
+	                <td><?=$rowDetail->Niveau_idNiveau;?>A</td>
+	                <td>
+	                  <a href="#">
+	                    <i class="fas fa-info linev" title="Derniéres scéances" data-enseigner="<?=$rowDetail->idEnseigner;?>"></i>
+	                  </a>&nbsp;
+	                  <a href="#">
+	                    <i class="fas fa-edit noter_absence" title="Noter l'absence" data-enseigner="<?=$rowDetail->idEnseigner;?>"></i>
+	                  </a>&nbsp;
+	                  <a href="#">
+	                    <i class="fas fa-users effectif_groupe" title="Effectif" data-enseigner="<?=$rowDetail->idEnseigner;?>"></i>
+	                  </a>
+	                </td>
               </tr>
               <?php endforeach; ?>
 
@@ -355,7 +357,7 @@
 
 <script >
   $(function () {
-    $('#exampleME,#stagiareTable,#absenceTable').DataTable({
+    $('.exampleME,#stagiareTable,#absenceTable').DataTable({
       "paging": true,
       "lengthChange": true,
       "searching": true,
@@ -446,7 +448,7 @@
             setTimeout(function(){
              window.location.href=base_url + 'absence/ajouter';
            }, 1300)
-          }else if(msg.status == '0'){
+          } else if(msg.status == '0'){
             $(document).Toasts('create', {
               class: 'bg-warning',
               title: 'Veuillez remplir les champs !',
@@ -468,6 +470,7 @@
           });
         }
       });
+      return false;
     }
   );
   //les dérnieres seances

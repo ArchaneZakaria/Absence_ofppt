@@ -550,7 +550,7 @@ printDiv();
 
             $(document).Toasts('create', {
               class: 'bg-success',
-              title: 'Séance créé ',
+              title: 'Stagiaire autorisé ',
               position: 'bottomRight',
               autohide: true,
               delay: 1200,
@@ -582,6 +582,7 @@ printDiv();
           });
         }
       });
+      return false;
     }
   );
 </script>

@@ -1,15 +1,3 @@
-<style media="screen">
-    *{
-      font-size:13px !important;
-    }
-    [class*="sidebar-dark"] .brand-link {
-      border-bottom: 1px solid #775b5b !important;
-      color: rgba(255,255,255,.8) !important;
-    }
-    [class*="sidebar-dark"] .user-panel {
-      border-bottom: 1px solid #775b5b !important;
-    }
-  </style>
   <style>
     .material-switch > input[type="checkbox"] {
       display: none !important;
@@ -58,14 +46,12 @@
   </style>
 
 <section class="content">
-  <!-- Default box -->
   <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Liste des années inscription</h3>
         </div>
-        <!-- /.card-header -->
         <div class="card-body">
           <table id="exampleME" class="table table-bordered table-hover">
             <thead>
@@ -75,65 +61,30 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>2018</td>
-                <td>
-                  <a href="#">
-                    <i class="fas fa-edit modifierannee" data-nomAnnee="2018" data-address="Address 1" title="Modifier annee" data-toggle="modal" data-target="#exampleModalEdit"></i>
-                  </a>
-                  <a href="#">
-                    <i class="fas fa-trash red supprimerannee" data-nomAnnee="2018" style="color: red;" title="ajouter annee" data-toggle="modal" data-target="#exampleModalDelete"></i>
-                  </a>
-                  <a href="#">
-                    <div class="material-switch float-right">
-                        <input class="checkboxEtabActiv" id="someSwitchOptionPrimary" name="switch" type="checkbox"/>
-                        <label for="someSwitchOptionPrimary" class="btn-primary"></label>
-                    </div>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>2019</td>
-                <td>
-                  <a href="#">
-                    <i class="fas fa-edit modifierannee" data-nomAnnee="2019" data-address="Address 2" title="Modifier annee" data-toggle="modal" data-target="#exampleModalEdit" ></i>
-                  <a>
-                  <a href="#">
-                    <i class="fas fa-trash red supprimerannee" data-nomAnnee="2019" style="color: red;" title="ajouter annee" data-toggle="modal" data-target="#exampleModalDelete"></i>
-                  <a
-                  <a href="#">
-                    <div class="material-switch float-right">
-                        <input class="checkboxEtabActiv" id="someSwitchOptionPrimary2" name="switch" type="checkbox"/>
-                        <label for="someSwitchOptionPrimary2" class="btn-primary"></label>
-                    </div>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>2020</td>
-                <td>
-                  <a href="#">
-                    <i class="fas fa-edit modifierannee" data-nomAnnee="2020" data-address="Address 3" title="Modifier annee" data-toggle="modal" data-target="#exampleModalEdit"></i>
-                  <a>
-                  <a href="#">
-                    <i class="fas fa-trash supprimerannee" data-nomAnnee="2020" style="color: red;" title="ajouter annee" data-toggle="modal" data-target="#exampleModalDelete"></i>
-                  <a>
+              <?php foreach ($listeAnneeInscription as $anneeInscription): ?>
+                <tr>
+                  <td><?= $anneeInscription->libelle_annee_inscription ?></td>
+                  <td>
+                    <a href="#">
+                      <i class="fas fa-edit modifierannee" data-nomAnnee="<?= $anneeInscription->code_annee_inscription ?>" data-codeAnnee="<?= $anneeInscription->libelle_annee_inscription ?>" data-annee="<?= $anneeInscription->idAnneeInscription ?>" title="Modifier annee"></i>
+                    </a>
+                    <a href="#">
+                      <i class="fas fa-trash red supprimerannee" data-annee="<?= $anneeInscription->idAnneeInscription ?>" data-nomAnnee="<?= $anneeInscription->libelle_annee_inscription ?>" style="color: red;" title="ajouter annee"></i>
+                    </a>
                     <a href="#">
                       <div class="material-switch float-right">
-                          <input class="checkboxEtabActiv" id="someSwitchOptionPrimary121212" name="switch" type="checkbox"/>
-                          <label for="someSwitchOptionPrimary121212" class="btn-primary"></label>
+                          <input class="checkboxEtabActiv" id="<?= $anneeInscription->idAnneeInscription ?>_activerEtabCheck" data-annee="<?= $anneeInscription->idAnneeInscription ?>" name="switch" type="checkbox" <?php if ($anneeInscription->active_anneeinscription == '1'){ echo "checked"; } ?> />
+                          <label for="<?= $anneeInscription->idAnneeInscription ?>_activerEtabCheck" class="btn-primary"></label>
                       </div>
                     </a>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
-        <!-- /.card-body -->
       </div>
     </div>
-    <!-- /.col -->
   </div>
-
 </section>
 
 
@@ -147,13 +98,18 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form role="form">
-        <div class="card-body">
+        <form id="formModel_edit" role="form">
+          <div class="card-body">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Année</label>
+                <input type="number" min="2018" class="form-control" id="anneeInscription" placeholder="Entrer le une de l'annee">
+              </div>
+          </div>
+          <div class="card-body" id="anneeInscriptionLabel">
             <div class="form-group">
-              <label for="exampleInputEmail1">Année</label>
-              <input type="number" min="2018" class="form-control" id="exampleInputNom" placeholder="Entrer le une de l'annee">
+              <label for="exampleInputEmail1">Année inscription:</label> <span id="annee_inscriptionSpan"></span>
             </div>
-        </div>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
             <button type="submit" class="btn btn-primary">Enregistrer</button>
@@ -174,7 +130,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form role="form">
+        <form id="formModel_delete" role="form">
           <div class="card-body">
               <div class="form-group">
                 <label for="exampleInputEmail1">Voulez vous vraiment supprimer cette annee ?</label>
@@ -183,7 +139,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="submit" class="btn btn-danger">Supprimer</button>
           </div>
         </form>
       </div>
@@ -193,7 +149,7 @@
   <script>
     $(function () {
       $('#exampleME').DataTable({
-        "paging": true,
+        "paging": false,
         "lengthChange": true,
         "searching": true,
         "ordering": false,
@@ -202,19 +158,196 @@
       });
     });
   </script>
+
   <script>
+    //Edit année Inscriptin
+    $("#anneeInscription").on('input',function() {
+      $("#anneeInscriptionLabel").css("display", "block");
+      $("#annee_inscriptionSpan").text($("#anneeInscription").val()+"/"+( parseInt($("#anneeInscription").val(), 10)+1));
+    });
+
+    var anneeInscriptionI="";
     $('.modifierannee').on("click",function(){
-      $("#exampleInputNom").val($(this).attr("data-nomAnnee"));
+      $("#anneeInscription").val($(this).attr("data-nomAnnee"));
+      anneeInscriptionI=$(this).attr("data-annee");
+      $("#annee_inscriptionSpan").text($(this).attr("data-codeAnnee"));
+      $('#exampleModalEdit').modal('show');
     });
-    $('.supprimerannee').on("click",function(){
-      $("#deletelabNom").text($(this).attr("data-nomAnnee"));
+
+    $('#formModel_edit').on("submit",function(){
+      var year             = new Date().getFullYear();
+      var anneeInscription = $("#anneeInscription").val();
+      if (anneeInscription != year) {
+        $(document).Toasts('create', {
+          class: 'bg-warning',
+          title: 'Erreur',
+          position: 'topRight',
+          autohide: true,
+          delay: 1500,
+          body: "l'année d'inscription n'est pas correct !"
+        });
+        return false;
+      }
+      var anneeInscription = $("#anneeInscription").val();
+      $.ajax({
+         type: 'POST',
+         url: base_url + 'annee_inscription/ajax/ajouterAnneeInscription',
+         dataType: "JSON",
+         data : {anneeInscriptionI:anneeInscriptionI,anneeInscription:anneeInscription},
+         cache:false,
+         success: function(msg){
+           if(msg.status == '1'){
+             $("#formModel_edit").trigger("reset");
+             $(document).Toasts('create', {
+               class: 'bg-success',
+               title: 'Succès',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+             setTimeout(function(){
+              window.location.href = base_url + 'annee_inscription/liste';
+            }, 1500);
+           }else if(msg.status == '0'){
+             $(document).Toasts('create', {
+               class: 'bg-warning',
+               title: 'Erreur',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+           }
+         },
+         error: function(dataR){
+           $(document).Toasts('create', {
+             class: 'bg-danger',
+             title: 'Erreur',
+             position: 'topRight',
+             autohide: true,
+             delay: 1500,
+             body: "Erreur de traitement !"
+           });
+         }
+      });
+      return false;
     });
+
+
+
+
   </script>
 
-    <script>
-      $(".checkboxEtabActiv").on("change",function() {
-        if(this.checked) {
-            alert("Event change annee !");
-        }
+
+  <script>
+    //delete année Inscriptin
+    var anneeInscriptionI = "";
+    $('.supprimerannee').on("click",function(){
+      anneeInscriptionI = $(this).attr("data-annee");
+      $("#deletelabNom").text($(this).attr("data-nomAnnee"));
+      $('#exampleModalDelete').modal('show');
+    });
+
+    $('#formModel_delete').on("submit",function(){
+      $.ajax({
+         type: 'POST',
+         url: base_url + 'annee_inscription/ajax/deleteAnneeInscription',
+         dataType: "JSON",
+         data : {anneeInscriptionI:anneeInscriptionI},
+         cache:false,
+         success: function(msg){
+           if(msg.status == '1'){
+             $("#formModel_delete").trigger("reset");
+             $('#exampleModalDelete').modal('hide');
+             $(document).Toasts('create', {
+               class: 'bg-success',
+               title: 'Succès',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+             setTimeout(function(){
+              window.location.href = base_url + 'annee_inscription/liste';
+            }, 1500);
+           }else if(msg.status == '0'){
+             $(document).Toasts('create', {
+               class: 'bg-warning',
+               title: 'Erreur',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+           }
+         },
+         error: function(dataR){
+           $(document).Toasts('create', {
+             class: 'bg-danger',
+             title: 'Erreur',
+             position: 'topRight',
+             autohide: true,
+             delay: 1500,
+             body: "Erreur de traitement !"
+           });
+         }
       });
-    </script>
+      return false;
+    });
+
+
+
+  </script>
+
+
+
+  <script>
+    $(".checkboxEtabActiv").on("change",function() {
+      if(this.checked) {
+        $(".checkboxEtabActiv").removeAttr("checked");
+        var annee = $(this).attr("data-annee");
+        $.ajax({
+         type: 'POST',
+         url: base_url + 'annee_inscription/ajax/activerAnneeInscription',
+         dataType: "JSON",
+         data : {annee:annee},
+         cache:false,
+         success: function(msg){
+           if(msg.status == '1'){
+             $(document).Toasts('create', {
+               class: 'bg-success',
+               title: 'Succès',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+             setTimeout(function(){
+               window.location.href = base_url + 'annee_inscription/liste';
+             }, 1500);
+           }else if(msg.status == '0'){
+             $(document).Toasts('create', {
+               class: 'bg-warning',
+               title: 'Erreur',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+           }
+         },
+         error : function(msg) {
+           $(document).Toasts('create', {
+             class: 'bg-danger',
+             title: 'Erreur',
+             position: 'topRight',
+             autohide: true,
+             delay: 1500,
+             body: 'Erreur de traitement'
+           });
+         }
+        });
+      }
+    });
+  </script>

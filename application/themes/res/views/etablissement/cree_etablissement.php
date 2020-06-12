@@ -48,14 +48,14 @@
            $("#creer_stagiaire").trigger("reset");
            $(document).Toasts('create', {
              class: 'bg-success',
-             title: 'Stagiaire créé ',
+             title: 'Créer etablissement',
              position: 'topRight',
              autohide: true,
              delay: 1500,
              body: msg.message
            });
            setTimeout(function(){
-            //window.location.href = base_url + 'etablissement/liste';
+            window.location.href = base_url + 'etablissement/liste';
           }, 1500);
          }else if(msg.status == '0'){
            $(document).Toasts('create', {

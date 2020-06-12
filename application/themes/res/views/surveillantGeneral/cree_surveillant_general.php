@@ -42,6 +42,15 @@
             <label for="sexe_Feminin"> Feminin </label>
           </div>
         </div>
+        <div class="form-group">
+          <label>Etablissement</label>
+          <select required class="form-control select2" id="etablissement">
+            <option value="" selected>Selectionner une Etablissement</option>
+            <?php foreach ($listEtablissement as $Etablissement): ?>
+              <option value="<?= $Etablissement->idEtablissement ?>"><?= $Etablissement->libelle_etablissement ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
       </div>
       <div class="card-footer">
         <button type="submit" class="btn btn-primary">Créer</button>
@@ -58,18 +67,26 @@
     var prenom        = $("#prenom").val();
     var email         = $("#email").val();
     var dateNaissance = $("#dateNaissance").val();
+    var etablissement = $("#etablissement").val();
     var sexe   = "";
     if ($("#sexe_Masculin").is(':checked')) {
       sexe = "Masculin";
     } else if ($("#sexe_Feminin").is(':checked')) {
       sexe = "Feminin";
     }else {
-      alert("le sexe de survéillant général est obligatoire !");
+      $(document).Toasts('create', {
+        class: 'bg-warning',
+        title: 'Erreur',
+        position: 'topRight',
+        autohide: true,
+        delay: 1500,
+        body: "le sexe de survéillant général est obligatoire !"
+      });
       return false;
     }
 
     /* //Test
-    alert("cin: "+cin+" nom: "+nom+" prenom: "+prenom+" email"+email+" sexe: "+sexe);
+    alert("cin: "+cin+" nom: "+nom+" prenom: "+prenom+" email"+email+" sexe: "+sexe+" etablissement: "+etablissement);
     return false;
     */
 
@@ -77,21 +94,21 @@
        type: 'POST',
        url: base_url + 'surveillant_general/ajax/createSurveillantGeneral',
        dataType: "JSON",
-       data : {cin:cin,nom:nom,prenom:prenom,email:email,sexe:sexe,dateNaissance:dateNaissance},
+       data : {cin:cin,nom:nom,prenom:prenom,email:email,sexe:sexe,dateNaissance:dateNaissance,etablissement:etablissement},
        cache:false,
        success: function(msg){
          if(msg.status == '1'){
            $("#formSurveillantGeneral").trigger("reset");
            $(document).Toasts('create', {
              class: 'bg-success',
-             title: 'Stagiaire créé ',
+             title: 'Succès',
              position: 'topRight',
              autohide: true,
              delay: 1500,
              body: msg.message
            });
            setTimeout(function(){
-            //window.location.href = base_url + 'surveillant_general/liste';
+            window.location.href = base_url + 'surveillant_general/liste';
           }, 1500);
          }else if(msg.status == '0'){
            $(document).Toasts('create', {
@@ -106,9 +123,11 @@
        },
        error : function(msg) {
          $(document).Toasts('create', {
-           class: 'bg-success',
-           title: 'Succès',
-           subtitle: 'close',
+           class: 'bg-danger',
+           title: 'Erreur',
+           position: 'topRight',
+           autohide: true,
+           delay: 1500,
            body: 'Erreur de traitement'
          });
        }

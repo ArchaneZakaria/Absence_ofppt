@@ -11,9 +11,9 @@ class inscription_model extends MY_Model {
     //fonction qui permet de retourner tous les inscriptions
     public function getallinscription()
     {
-      $sql="select *
-      FROM inscription
-      where deleted_inscription = '0'";
+      $sql="SELECT *
+            FROM inscription
+            WHERE deleted_inscription = '0'";
       $query = $this->db->query($sql);
       return $query->result();
     }
@@ -21,17 +21,17 @@ class inscription_model extends MY_Model {
     //fonction qui permet de retourner tous les inscriptions de l'annee et l'établissement active
     public function getAllInscriptionActive()
     {
-      $sql="select *
-      FROM inscription, etablissement, anneeinscription, stagiaire, filiere, groupe
-      where inscription.AnneeInscription_idAnneeInscription=anneeinscription.idAnneeInscription
-      and inscription.Stagiaire_idStagiaire=stagiaire.idStagiaire
-      and inscription.Groupe_idGroupe=groupe.idGroupe
-      and groupe.Filiere_idFiliere=filiere.idFiliere
-      and  inscription.Etablissement_idEtablissement = etablissement.idEtablissement
-      and anneeinscription.active_anneeinscription ='1'
-      and etablissement.active_etablissement ='1'
-      and inscription.deleted_inscription = '0'
-      and stagiaire.deleted_stagiaire = '0'
+      $sql="SELECT *
+	      FROM inscription, etablissement, anneeinscription, stagiaire, filiere, groupe
+	      where inscription.AnneeInscription_idAnneeInscription=anneeinscription.idAnneeInscription
+	      and inscription.Stagiaire_idStagiaire=stagiaire.idStagiaire
+	      and inscription.Groupe_idGroupe=groupe.idGroupe
+	      and groupe.Filiere_idFiliere=filiere.idFiliere
+	      and  inscription.Etablissement_idEtablissement = etablissement.idEtablissement
+	      and anneeinscription.active_anneeinscription ='1'
+	      and etablissement.active_etablissement ='1'
+	      and inscription.deleted_inscription = '0'
+	      and stagiaire.deleted_stagiaire = '0'
       ";
       $query = $this->db->query($sql);
       return $query->result();

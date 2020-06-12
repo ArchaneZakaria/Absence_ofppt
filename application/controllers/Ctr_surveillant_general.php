@@ -8,10 +8,9 @@ class Ctr_surveillant_general extends Master
     {
       parent::__construct();
       date_default_timezone_set('Africa/Casablanca');
-      $this->load->model("Surveillant_General_model","Surveillant_General");
+      $this->load->model("Utilisateurs_model","Utilisateurs");
       $this->load->model("Role_model","Role");
-
-
+      $this->load->model("etablissement_model","etablissement");
 
     }
 
@@ -28,13 +27,15 @@ class Ctr_surveillant_general extends Master
 	    switch($data){
 		    case 'add':
 		    case 'ajouter':
+        $listEtablissement       = $this->etablissement->getalletablissement();
           $this->display($id,$data,"Créer un survéillant général");
-          $this->template->set_partial('container', 'surveillantGeneral/cree_surveillant_general',array('data' => $data));
+          $this->template->set_partial('container', 'surveillantGeneral/cree_surveillant_general',array('data' => $data, 'listEtablissement' => $listEtablissement));
 		    break;
         case 'liste':
-          $listSurveillant_General = $this->Surveillant_General->getAllSurveillant_General();
+          $listSurveillant_General = $this->Utilisateurs->getUsersByType('surveillant');
+          $listEtablissement       = $this->etablissement->getalletablissement();
           $this->display($id,$data,"Liste des survéillants généraux");
-          $this->template->set_partial('container', 'surveillantGeneral/list_surveillant_general',array('data' => $data, 'listSurveillant_General' => $listSurveillant_General));
+          $this->template->set_partial('container', 'surveillantGeneral/list_surveillant_general',array('data' => $data, 'listEtablissement' => $listEtablissement, 'listSurveillant_General' => $listSurveillant_General));
         break;
 		    default:
           //Errour 404
@@ -48,6 +49,8 @@ class Ctr_surveillant_general extends Master
       $this->load->library('form_validation');
       $this->form_validation->set_rules('cin', 'Le champs cin/Matricule est obligatoire', 'required|trim',
                               array('required' => 'Le champs cin/Matricule est obligatoire'));
+      $this->form_validation->set_rules('etablissement', 'Le champs etablissement est obligatoire', 'required|trim',
+                              array('required' => 'Le champs etablissement est obligatoire'));
       $this->form_validation->set_rules('nom', 'Le champs nom est obligatoire', 'required|trim',
                               array('required' => 'Le champs nom est obligatoire'));
       $this->form_validation->set_rules('prenom', 'Le champs prénom est obligatoire', 'required|trim',
@@ -57,14 +60,15 @@ class Ctr_surveillant_general extends Master
       $this->form_validation->set_rules('sexe', 'Le champs sexe est obligatoire', 'required|trim',
                               array('required' => 'Le champs sexe est obligatoire'));
 
-
       if ($this->form_validation->run()) {
         //check if survéillant general role existe ou non
-        $role = $this->Role->getRoleId("survéillant général");
+        $role = $this->Role->getRoleId("surveillant");
         if (count($role)>0) {
           $role = $role[0]->idRole;
 
           $id            = $this->input->post('survGI');
+          $dateNaissance = $this->input->post('dateNaissance');
+          $etablissement = $this->input->post('etablissement');
           $cin           = $this->input->post('cin');
           $nom           = $this->input->post('nom');
           $prenom        = $this->input->post('prenom');
@@ -75,15 +79,17 @@ class Ctr_surveillant_general extends Master
           if(isset($id)){//update
             $conditions             = array('idUtilisateur' => $id);
             $surveillanGeneraleData = array (
-              'matricule_utilisateur'  => $cin,
-              'Nom'                    => $nom,
-              'Prenom'                 => $prenom,
-              'Email'                  => $email,
-              'sexe_utilisateur'       => $sexe,
-              'udate_utilisateur'      => $dateNow,
-              'uby_utilisateur'        => '1',
+              'matricule_utilisateur'          => $cin,
+              'Nom'                            => $nom,
+              'Prenom'                         => $prenom,
+              'Email'                          => $email,
+              'sexe_utilisateur'               => $sexe,
+              'DateNaissance'                  => $dateNaissance,
+              'udate_utilisateur'              => $dateNow,
+              'uby_utilisateur'                => '1',
+              'Etablissement_idEtablissement'  => $etablissement
               );
-            $result = $this->Surveillant_General->update($surveillanGeneraleData,$conditions);
+            $result = $this->Utilisateurs->update($surveillanGeneraleData,$conditions);
             if ($result) {
               echo json_encode(array( 'status'   => '1',
                                       'location' => 'url',
@@ -94,36 +100,58 @@ class Ctr_surveillant_general extends Master
                                       'message'  => "Erreur de traitement"));
             }
           } else { //create
-            $surveillanGeneraleData=array(
-                  'matricule_utilisateur'  => $cin,
-                  'Nom'                    => $nom,
-                  'Prenom'                 => $prenom,
-                  'Email'                  => $email,
-                  'sexe_utilisateur'       => $sexe,
-                  'cdate_utilisateur'      => $dateNow,
-                  'Password'               => 'Mm1234//',
-                  'cby_utilisateur'        => '1',
-                  'deleted_utilisateur'    => '0',
-                  'DateNaissance'          => $dateNaissance,
-                  'Role_idRole'            => $role
-                );
-            $result = $this->Surveillant_General->create($surveillanGeneraleData);
-            if($result){
-              $message = "Votre survéillant général été créer avec succès.";
-              echo json_encode(array( 'status' => '1',
+            $existeUser = $this->Utilisateurs->checkExisteUser('surveillant',$email,$etablissement);
+            if (count($existeUser) == 0) {
+              $passeword = random_string('alnum', 8);
+              $surveillanGeneraleData=array(
+                    'matricule_utilisateur'          => $cin,
+                    'Nom'                            => $nom,
+                    'Prenom'                         => $prenom,
+                    'Email'                          => $email,
+                    'sexe_utilisateur'               => $sexe,
+                    'cdate_utilisateur'              => $dateNow,
+                    'Password'                       => $passeword,
+                    'cby_utilisateur'                => '1',
+                    'deleted_utilisateur'            => '0',
+                    'DateNaissance'                  => $dateNaissance,
+                    'Role_idRole'                    => $role,
+                    'Etablissement_idEtablissement'  => $etablissement
+                  );
+              $result = $this->Utilisateurs->create($surveillanGeneraleData);
+              if($result){
+                $this->load->model('Mail_model');
+                $resultMail = $this->Mail_model->mailPasseword($nom, $prenom, $passeword,$email);
+                if ($resultMail) {
+                  $message = "Le compte survéillant général été créer avec succès.";
+                  echo json_encode(array( 'status' => '1',
+                                          'message' => $message));
+                } else {
+                    $message = "Le compte survéillant général été créer avec succès.<br>Erreur d'envoi de mot de passe à l'email de survéillant général !";
+                    echo json_encode(array( 'status' => '0',
+                                            'message' => $message));
+                }
+              } else {
+                  $message = "Erreur de creation de survéillant général !";
+                  echo json_encode(array( 'status' => '0',
+                                          'message' => $message));
+              }
+            }else {
+              $message = "Ce compte survéillant général existe déjà !";
+              echo json_encode(array( 'status' => '0',
                                       'message' => $message));
-            } else {
-                $message = "Erreur de creation de survéillant général.";
-                echo json_encode(array( 'status' => '0',
-                                        'message' => $message));
             }
           }
         } else {
-            $errors = validation_errors();
+            $errors = "Le role survéillant générale n'existe pas !";
             echo json_encode(array( 'status'   => '0',
                                     'location' => 'url',
                                     'message'  => $errors));
         }
+      } else {
+          $errors = validation_errors();
+          echo json_encode(array( 'status'   => '0',
+                                  'location' => 'url',
+                                  'message'  => $errors));
       }
     }
 
@@ -142,7 +170,7 @@ class Ctr_surveillant_general extends Master
           'dby_utilisateur'      => '1',
           'ddate_utilisateur'    => $dateNow
           );
-        $result = $this->Surveillant_General->update($surveillanGeneraleData,$conditions);
+        $result = $this->Utilisateurs->update($surveillanGeneraleData,$conditions);
         if ($result) {
           echo json_encode(array( 'status'   => '1',
                                   'location' => 'url',

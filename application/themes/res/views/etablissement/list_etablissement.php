@@ -47,91 +47,46 @@
   </style>
 
 
-
-
-
-
 <section class="content">
-  <!-- Default box -->
   <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Liste des Etablissements</h3>
         </div>
-        <!-- /.card-header -->
         <div class="card-body">
           <table id="exampleME" class="table table-bordered table-hover">
             <thead>
-            <tr>
-              <th>Nom Etablissement</th>
-              <th>Adresse</th>
-              <th></th>
-            </tr>
+              <tr>
+                <th>Nom Etablissement</th>
+                <th></th>
+              </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Etablissement 1</td>
-              <td>Address 1</td>
-              <td>
-                <a href="#">
-                  <i class="fas fa-edit modifierEtablissement" data-nomEtab="Etablissement 1" data-address="Address 1" title="Modifier etablissement" data-toggle="modal" data-target="#exampleModalEdit"></i>
-                </a>
-                <a href="#">
-                  <i class="fas fa-trash red supprimerEtablissement" data-nomEtab="Etablissement 1" style="color: red;" title="ajouter etablissement" data-toggle="modal" data-target="#exampleModalDelete"></i>
-                </a>
-                <a href="#">
-                  <div class="material-switch float-right">
-                      <input class="checkboxEtabActiv" id="someSwitchOptionPrimary" name="switch" type="checkbox"/>
-                      <label for="someSwitchOptionPrimary" class="btn-primary"></label>
-                  </div>
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Etablissement 2</td>
-              <td>Address 2</td>
-              <td>
-                <a href="#">
-                  <i class="fas fa-edit modifierEtablissement" data-nomEtab="Etablissement 2" data-address="Address 2" title="Modifier etablissement" data-toggle="modal" data-target="#exampleModalEdit" ></i>
-                <a>
-                <a href="#">
-                  <i class="fas fa-trash red supprimerEtablissement" data-nomEtab="Etablissement 2" style="color: red;" title="ajouter etablissement" data-toggle="modal" data-target="#exampleModalDelete"></i>
-                <a
-                <a href="#">
-                  <div class="material-switch float-right">
-                      <input class="checkboxEtabActiv" id="someSwitchOptionPrimary2" name="switch" type="checkbox"/>
-                      <label for="someSwitchOptionPrimary2" class="btn-primary"></label>
-                  </div>
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Etablissement 3</td>
-              <td>Address 3</td>
-              <td>
-                <a href="#">
-                  <i class="fas fa-edit modifierEtablissement" data-nomEtab="Etablissement 3" data-address="Address 3" title="Modifier etablissement" data-toggle="modal" data-target="#exampleModalEdit"></i>
-                <a>
-                <a href="#">
-                  <i class="fas fa-trash supprimerEtablissement" data-nomEtab="Etablissement 3" style="color: red;" title="ajouter etablissement" data-toggle="modal" data-target="#exampleModalDelete"></i>
-                <a>
-                  <a href="#">
-                    <div class="material-switch float-right">
-                        <input class="checkboxEtabActiv" id="someSwitchOptionPrimary121212" name="switch" type="checkbox"/>
-                        <label for="someSwitchOptionPrimary121212" class="btn-primary"></label>
-                    </div>
-                  </a>
-              </td>
-            </tr>
+              <?php foreach ($listeEtablissements as $etablissement): ?>
+                <tr>
+                  <td><?= $etablissement->libelle_etablissement ?></td>
+                  <td>
+                    <a href="#">
+                      <i class="fas fa-edit modifierEtablissement" data-etab="<?= $etablissement->idEtablissement ?>" data-nomEtab="<?= $etablissement->libelle_etablissement ?>" title="Modifier etablissement"></i>
+                    </a>
+                    <a href="#">
+                      <i class="fas fa-trash red supprimerEtablissement" data-etab="<?= $etablissement->idEtablissement ?>" data-nomEtab="<?= $etablissement->libelle_etablissement ?>" style="color: red;" title="ajouter etablissement"></i>
+                    </a>
+                    <a href="#">
+                      <div class="material-switch float-right">
+                          <input class="checkboxEtabActiv" id="<?= $etablissement->idEtablissement ?>_activerA" data-etab="<?= $etablissement->idEtablissement ?>" name="switch" type="checkbox" <?php if ($etablissement->active_etablissement==1) { echo "checked";}?> />
+                          <label for="<?= $etablissement->idEtablissement ?>_activerA" class="btn-primary"></label>
+                      </div>
+                    </a>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
             </tbody>
           </table>
-        <!-- /.card-body -->
       </div>
     </div>
-    <!-- /.col -->
   </div>
-
 </section>
 
 
@@ -140,25 +95,21 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modifier etablissement</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Modifier l'Etablissement</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form role="form">
-        <div class="card-body">
+        <form id="formModel_editEtab" role="form">
+          <div class="card-body">
             <div class="form-group">
-              <label for="exampleInputEmail1">Nom etablissement</label>
-              <input type="matricule" class="form-control" id="exampleInputNom" placeholder="Entrer le nom de l'etablissement">
+              <label for="exampleInputEmail1">Nom de l'Etablissement</label>
+              <input type="matricule" class="form-control" id="formModel_editEtabNom" placeholder="Entrer le nom de l'etablissement">
             </div>
-            <div class="form-group">
-              <label for="exampleInputEmail1">Adresse Etablissement</label>
-              <textarea type="matricule" class="form-control" id="exampleInputAddress" placeholder="Entrer l'Address de l'etablissement"></textarea>
-            </div>
-        </div>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="submit" class="btn btn-primary">Modifier</button>
           </div>
         </form>
       </div>
@@ -176,7 +127,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form role="form">
+        <form id="formModel_delete" role="form">
           <div class="card-body">
               <div class="form-group">
                 <label for="exampleInputEmail1">Voulez vous vraiment supprimer cette etablissement ?</label>
@@ -196,7 +147,7 @@
   <script>
     $(function () {
       $('#exampleME').DataTable({
-        "paging": true,
+        "paging": false,
         "lengthChange": true,
         "searching": true,
         "ordering": false,
@@ -206,19 +157,166 @@
     });
   </script>
   <script>
+    var etabEdit="";
     $('.modifierEtablissement').on("click",function(){
-      $("#exampleInputNom").val($(this).attr("data-nomEtab"));
-      $("#exampleInputAddress").val($(this).attr("data-address"));
+      $("#formModel_editEtabNom").val($(this).attr("data-nomEtab"));
+      etabEdit = $(this).attr("data-etab");
+      $('#exampleModalEdit').modal('show');
     });
-    $('.supprimerEtablissement').on("click",function(){
-      $("#deletelabNom").text($(this).attr("data-nomEtab"));
+    $("#formModel_editEtab").on("submit",function() {
+      var nom = $("#formModel_editEtabNom").val();
+      $.ajax({
+         type: 'POST',
+         url: base_url + 'etablissement/ajax/ajouterEtablissement',
+         dataType: "JSON",
+         data : {nom:nom,etabEdit:etabEdit},
+         cache:false,
+         success: function(msg){
+           if(msg.status == '1'){
+             $("#formModel_editEtab").trigger("reset");
+             $('#exampleModalEdit').modal('hide');
+             $(document).Toasts('create', {
+               class: 'bg-success',
+               title: 'Succès',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+             setTimeout(function(){
+              window.location.href = base_url + 'etablissement/liste';
+            }, 1500);
+           }else if(msg.status == '0'){
+             $(document).Toasts('create', {
+               class: 'bg-warning',
+               title: 'Erreur',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+           }
+         },
+         error : function(msg) {
+           $(document).Toasts('create', {
+             class: 'bg-danger',
+             title: 'Erreur',
+             position: 'topRight',
+             autohide: true,
+             delay: 1500,
+             body: 'Erreur de traitement'
+           });
+         }
+      });
+      return false;
     });
   </script>
+  <script>
+    //delete etablissement
+    var etabdel="";
+    $('.supprimerEtablissement').on("click",function(){
+      $("#deletelabNom").text($(this).attr("data-nomEtab"));
+      etabdel = $(this).attr("data-etab");
+      $('#exampleModalDelete').modal('show');
+    });
 
-    <script>
-      $(".checkboxEtabActiv").on("change",function() {
-        if(this.checked) {
-            alert("Event change etablissement !");
-        }
+    $("#formModel_delete").on("submit",function() {
+      $.ajax({
+         type: 'POST',
+         url: base_url + 'etablissement/ajax/deleteEtablissement',
+         dataType: "JSON",
+         data : {etabdel:etabdel},
+         cache:false,
+         success: function(msg){
+           if(msg.status == '1'){
+             $("#formModel_delete").trigger("reset");
+             $('#exampleModalDelete').modal('hide');
+             $(document).Toasts('create', {
+               class: 'bg-success',
+               title: 'Succès',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+             setTimeout(function(){
+              window.location.href = base_url + 'etablissement/liste';
+            }, 1500);
+           }else if(msg.status == '0'){
+             $(document).Toasts('create', {
+               class: 'bg-warning',
+               title: 'Erreur',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: msg.message
+             });
+           }
+         },
+         error : function(msg) {
+           $(document).Toasts('create', {
+             class: 'bg-danger',
+             title: 'Erreur',
+             position: 'topRight',
+             autohide: true,
+             delay: 1500,
+             body: 'Erreur de traitement'
+           });
+         }
       });
-    </script>
+      return false;
+    });
+
+
+
+  </script>
+  <script>
+    //Chanege Etablissement
+    $(".checkboxEtabActiv").on("change",function() {
+      if(this.checked) {
+        $(".checkboxEtabActiv").removeAttr("checked");
+        var etabEnable = $(this).attr("data-etab");
+        $.ajax({
+           type: 'POST',
+           url: base_url + 'etablissement/ajax/activerEtablissement',
+           dataType: "JSON",
+           data : {etabEnable:etabEnable},
+           cache:false,
+           success: function(msg){
+             if(msg.status == '1'){
+               $(document).Toasts('create', {
+                 class: 'bg-success',
+                 title: 'Succès',
+                 position: 'topRight',
+                 autohide: true,
+                 delay: 1500,
+                 body: msg.message
+               });
+               setTimeout(function(){
+                window.location.href = base_url + 'etablissement/liste';
+              }, 1500);
+             }else if(msg.status == '0'){
+               $(document).Toasts('create', {
+                 class: 'bg-warning',
+                 title: 'Erreur',
+                 position: 'topRight',
+                 autohide: true,
+                 delay: 1500,
+                 body: msg.message
+               });
+             }
+           },
+           error : function(msg) {
+             $(document).Toasts('create', {
+               class: 'bg-danger',
+               title: 'Erreur',
+               position: 'topRight',
+               autohide: true,
+               delay: 1500,
+               body: 'Erreur de traitement'
+             });
+           }
+        });
+      }
+    });
+  </script>

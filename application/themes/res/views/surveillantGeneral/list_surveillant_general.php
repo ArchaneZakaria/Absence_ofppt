@@ -1,12 +1,10 @@
 <section class="content">
-  <!-- Default box -->
   <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Liste des survéillants général</h3>
         </div>
-        <!-- /.card-header -->
         <div class="card-body">
           <table id="exampleME" class="table table-bordered table-hover">
             <thead>
@@ -28,10 +26,13 @@
                   <td><?= $Surveillant_General->Nom ?></td>
                   <td><?= $Surveillant_General->Prenom ?></td>
                   <td><?= $Surveillant_General->sexe_utilisateur ?></td>
-                  <td>---</td>
+                  <td><?= $Surveillant_General->libelle_etablissement ?></td>
                   <td>
                       <a href="#">
-                        <i class="fas fa-edit modifierSurveillantG" data-sexe="<?= $Surveillant_General->sexe_utilisateur ?>" data-prenom="<?= $Surveillant_General->Prenom ?>" data-nom="<?= $Surveillant_General->Nom  ?>" data-matricule="<?= $Surveillant_General->matricule_utilisateur ?>" data-etablissement="---" data-email="<?= $Surveillant_General->Email ?>" data-surveillantI="<?= $Surveillant_General->idUtilisateur ?>" title="Modifier etablissement"></i>
+                        <i class="fas fa-edit modifierSurveillantG" data-dateNaissance="<?= $Surveillant_General->DateNaissance  ?>"
+                        data-etablissement="<?= $Surveillant_General->Etablissement_idEtablissement ?>" data-sexe="<?= $Surveillant_General->sexe_utilisateur ?>"
+                        data-prenom="<?= $Surveillant_General->Prenom ?>" data-nom="<?= $Surveillant_General->Nom  ?>" data-matricule="<?= $Surveillant_General->matricule_utilisateur ?>"
+                        data-email="<?= $Surveillant_General->Email ?>" data-surveillantI="<?= $Surveillant_General->idUtilisateur ?>" title="Modifier etablissement"></i>
                       <a>
                       <a href="#">
                         <i style="color: red;" class="fas fa-trash supprimerSurveillantG" data-prenom="<?= $Surveillant_General->Prenom ?>" data-nom="<?= $Surveillant_General->Nom  ?>" title="Supprimer etablissement" data-surveillantI="<?= $Surveillant_General->idUtilisateur ?>"></i>
@@ -41,10 +42,8 @@
               <?php endforeach; ?>
             </tbody>
           </table>
-        <!-- /.card-body -->
       </div>
     </div>
-    <!-- /.col -->
   </div>
 
 </section>
@@ -77,6 +76,15 @@
               <label for="exampleInputEmail1"> Email </label>
               <input required type="email" class="form-control" id="modelEditemail" placeholder="Entrer votre email">
             </div>
+            <div class="form-group">
+              <label>Date de naissance:</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                </div>
+                <input required id="modelEditdateNaissance" type="date" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+              </div>
+            </div>
             <div class="form-group clearfix">
               <label>Sexe:</label><br>
               <div class="icheck-primary d-inline">
@@ -89,12 +97,14 @@
               </div>
             </div>
             <div class="form-group">
-                 <label>Etablissement</label>
-                 <select class="form-control select2">
-                   <option>---</option>
-                   <option>etab 2</option>
-                 </select>
-               </div>
+              <label>Etablissement</label>
+              <select required class="form-control select2" id="etablissement">
+                <option value="" selected>Selectionner une Etablissement</option>
+                <?php foreach ($listEtablissement as $Etablissement): ?>
+                  <option value="<?= $Etablissement->idEtablissement ?>"><?= $Etablissement->libelle_etablissement ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -168,7 +178,7 @@
     //DataTable
     $(function () {
       $('#exampleME').DataTable({
-        "paging": true,
+        "paging": false,
         "lengthChange": true,
         "searching": true,
         "ordering": false,
@@ -184,9 +194,10 @@
       survGI = $(this).attr("data-surveillantI");
       $("#modelEditNom").val($(this).attr("data-nom"));
       $("#modelEditPrenom").val($(this).attr("data-prenom"));
+      $("#modelEditdateNaissance").val($(this).attr("data-dateNaissance"));
       $("#modelEditemail").val($(this).attr("data-email"));
       $("#modelEditMatricule").val($(this).attr("data-matricule"));
-
+      $('#etablissement option[value="'+ $(this).attr("data-etablissement") +'"]').attr('selected', true);
       var sexe = $(this).attr("data-sexe");
       if (sexe === "Masculin") {//sexe
         $("#modelEditSexe_Masculin").attr('checked', 'true');
@@ -200,7 +211,9 @@
       var matr   = $("#modelEditMatricule").val();
       var nom    = $("#modelEditNom").val();
       var prenom = $("#modelEditPrenom").val();
+      var dateNaissance = $("#modelEditdateNaissance").val();
       var email  = $("#modelEditemail").val();
+      var etablissement = $("#etablissement").val();
       var sexe   = "";
       if ($("#modelEditSexe_Masculin").is(':checked')) {
         sexe = "Masculin";
@@ -219,7 +232,7 @@
       }
       /*
       Test
-      alert("id: "+survGI+"\n matr: "+matr+"\n nom: "+nom+"\n prenom: "+prenom+"\n sexe: "+sexe);
+      alert(" id: "+survGI+"\n matr: "+matr+"\n nom: "+nom+"\n prenom: "+prenom+"\n sexe: "+sexe+"\n etablissement: "+etablissement+" \ndateNaissance: "+dateNaissance);
       return false;
       */
 
@@ -227,14 +240,14 @@
          type: 'POST',
          url: base_url + 'surveillant_general/ajax/createSurveillantGeneral',
          dataType: "JSON",
-         data : {survGI:survGI,cin:matr,nom:nom,prenom:prenom,email:email,sexe:sexe},
+         data : {survGI:survGI,cin:matr,nom:nom,prenom:prenom,email:email,sexe:sexe,etablissement:etablissement,dateNaissance:dateNaissance},
          cache:false,
          success: function(msg){
            if(msg.status == '1'){
              $("#formModelEditsurveillantgenerale").trigger("reset");
              $(document).Toasts('create', {
                class: 'bg-success',
-               title: 'Stagiaire créé ',
+               title: 'Succès',
                position: 'topRight',
                autohide: true,
                delay: 1500,
@@ -266,9 +279,6 @@
       });
       return false;
     });
-
-
-
   </script>
   <script>
     //delete Surveillant General
@@ -291,7 +301,7 @@
              $("#formModelDeleteSVG").trigger("reset");
              $(document).Toasts('create', {
                class: 'bg-success',
-               title: 'Stagiaire créé ',
+               title: 'Succès',
                position: 'topRight',
                autohide: true,
                delay: 1500,

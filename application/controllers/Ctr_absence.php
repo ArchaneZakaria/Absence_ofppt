@@ -178,7 +178,7 @@ class Ctr_absence extends Master
           }
 
                    $conditions = array();
-                   $message = "Stagiaire autorisé.";
+                   $message = "Stagiaire autorisé a rentrer en classe.";
                    echo json_encode(array( 'status' => '1',
                                            'message' => $message));
                                        }

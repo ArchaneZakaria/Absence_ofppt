@@ -50,10 +50,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 
-/**** absence ***/
-$route['home']                           = "Ctr_home";
+/**** login ***/
+$route['login']                             = "Ctr_login";
+$route['login/ajax/(:any)']                 = "Ctr_login/$1";
 /** absence ***/
-
 
 /**** absence ***/
 $route['absence']                           = "Ctr_absence";
@@ -129,6 +129,6 @@ $route['annee_inscription/(:any)/(:any)']   = "Ctr_annee_inscription/annee_inscr
 $route['statistic']                         = "Ctr_statistic";
 /** statistic ***/
 
-$route['default_controller'] = "Ctr_home";
-$route['404_override'] = 'Ctr_home/error';
-$route['translate_uri_dashes'] = TRUE;
+$route['default_controller']                = "Ctr_login";
+$route['404_override']                      = 'Ctr_login/error';
+$route['translate_uri_dashes']              = TRUE;

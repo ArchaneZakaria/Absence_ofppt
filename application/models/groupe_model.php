@@ -18,8 +18,7 @@ class groupe_model extends MY_Model {
       $query = $this->db->query($sql);
       return $query->result();
     }
-
-
+    
     //fonction qui permet de retourner tous les stagiaires inscrits dans un groupe
     public function getStagiairesGroupe($idGroupe)
     {

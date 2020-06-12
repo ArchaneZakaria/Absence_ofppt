@@ -12,7 +12,7 @@ class Role_model extends MY_Model {
 	{
 		$sql = " SELECT *
 						 FROM role
-						 WHERE role.libelle_role = '$roleLib'
+						 WHERE role.code_role = '$roleLib'
 						 AND role.deleted_role = '0'
 						 LIMIT 1";
 		$query=$this->db->query($sql);
